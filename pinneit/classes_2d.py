@@ -2,8 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
+
 class Rect:
-    def __init__(self, x, y, width, height):
+    def __init__(self, x, y, width, height, BC=None):
         self.x = x
         self.y = y
         self.width = width
@@ -13,6 +14,7 @@ class Rect:
         self.y_min = self.y
         self.y_max = self.y + self.height
         self.geo_type = "Rect"
+        self.BC = None
 
     def properties(self):
         print(
@@ -34,7 +36,7 @@ class Rect:
         pts = np.hstack((x_lower_pts, x_upper_pts, y_left_pts, y_right_pts)).T
 
         return pts
-        
+
     def generate_surface_points(self, n_pts):
         pts = np.random.rand(n_pts, 2)
         pts[:, 0] = self.x_min + (self.x_max - self.x_min) * pts[:, 0]
@@ -42,17 +44,16 @@ class Rect:
 
         return pts
 
-
-    def plot(self,edgecolor="C0",facecolor="none",hatch="/"):
+    def plot(self, edgecolor="C0", facecolor="none", hatch="/"):
         fig, ax = plt.subplots()
         patch = patches.Rectangle(
-                    (self.x, self.y),
-                    self.width,
-                    self.height,
-                    edgecolor=edgecolor,
-                    facecolor=facecolor,
-                    hatch=hatch,
-                )
+            (self.x, self.y),
+            self.width,
+            self.height,
+            edgecolor=edgecolor,
+            facecolor=facecolor,
+            hatch=hatch,
+        )
         ax.add_patch(patch)
         plt.xlim(self.x - 0.2, self.x + self.width + 0.2)
         plt.ylim(self.y - 0.2, self.y + self.height + 0.2)
@@ -61,7 +62,7 @@ class Rect:
         plt.axis("equal")
         plt.tight_layout()
         plt.show()
-    
+
     def domain_points_exclude_Rect(self, exclude, n_pts, tol=0.02):
         ### old
         gen_points = 0
@@ -87,8 +88,9 @@ class Rect:
 
         return np.vstack(Pts)[:n_pts]
 
+
 class Circ:
-    def __init__(self, x, y, r):
+    def __init__(self, x, y, r, BC=None):
         self.x = x
         self.y = y
         self.r = r
@@ -97,45 +99,44 @@ class Circ:
         self.y_min = self.y - self.r
         self.y_max = self.y + self.r
         self.geo_type = "Circ"
+        self.BC = None
 
     def properties(self):
-        print(
-            f"x0 = {self.x}, y0 = {self.y}, r = {self.r}"
-        )
+        print(f"x0 = {self.x}, y0 = {self.y}, r = {self.r}")
         print(
             f"x_min = {self.x_min:.2f}, x_max = {self.x_max:.2f}, y_min = {self.y_min:.2f}, y_max = {self.y_max:.2f}"
         )
 
     def generate_edge_points(self, n_pts):
-        pts = np.zeros((n_pts,n_pts))
+        pts = np.zeros((n_pts, 2))
         angles = np.random.uniform(0, 2 * np.pi, n_pts)
-        
-        pts[:,0] = self.x + self.r * np.cos(angles)
-        pts[:,1] = self.y + self.r * np.sin(angles)
+
+        pts[:, 0] = self.x + self.r * np.cos(angles)
+        pts[:, 1] = self.y + self.r * np.sin(angles)
 
         return pts
 
     def generate_surface_points(self, n_pts):
-        pts = np.zeros((n_pts,n_pts))
+        pts = np.zeros((n_pts, n_pts))
         rand_r = self.r * np.sqrt(np.random.uniform(0, 1, n_pts))
         rand_angle = np.random.uniform(0, 2 * np.pi, n_pts)
 
-        pts[:,0] = self.x + rand_r * np.cos(rand_angle)
-        pts[:,1] = self.y + rand_r * np.sin(rand_angle)
+        pts[:, 0] = self.x + rand_r * np.cos(rand_angle)
+        pts[:, 1] = self.y + rand_r * np.sin(rand_angle)
 
         return pts
 
-    def plot(self,edgecolor="C0",facecolor="none",hatch="/"):
+    def plot(self, edgecolor="C0", facecolor="none", hatch="/"):
         fig, ax = plt.subplots()
         patch = patches.Circle(
-                    (self.x, self.y),
-                    self.r,
-                    edgecolor=edgecolor,
-                    facecolor=facecolor,
-                    hatch=hatch,
-                )
+            (self.x, self.y),
+            self.r,
+            edgecolor=edgecolor,
+            facecolor=facecolor,
+            hatch=hatch,
+        )
         ax.add_patch(patch)
-        plt.xlim(self.x - self.r -0.2, self.x +  self.r + 0.2)
+        plt.xlim(self.x - self.r - 0.2, self.x + self.r + 0.2)
         plt.ylim(self.y - self.r - 0.2, self.y + self.r + 0.2)
         plt.xlabel("$x$")
         plt.ylabel("$y$")

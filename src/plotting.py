@@ -3,7 +3,7 @@ import matplotlib.patches as patches
 from .util import Rect
 
 
-def plot_domain(Ω: Rect, exclΩ: Rect, mode="square"):
+def plot_domains(Ω: Rect, exclΩ: Rect, mode="square"):
     fig, ax = plt.subplots()
     if mode == "square":
         domainΩ = patches.Rectangle(
@@ -78,3 +78,20 @@ def plot_domain_wpoints(
     plt.axis("equal")
     plt.tight_layout()
     plt.show()
+
+
+"""
+pts_plot_props = {
+    "s": 1,
+    "c": "C2",
+    "marker": ".",
+    "label": "Points in $\Gamma$",
+}
+plot_domain_wpoints(Ω, Γ, Γ_Pts_in, pts_visual=pts_plot_props)
+
+pts_plot_props["label"] = "Points on $\partial\Gamma$"
+plot_domain_wpoints(Ω, Γ, Γ_Pts_edge, pts_visual=pts_plot_props)
+
+pts_plot_props["label"] = "Points on $\partial\Omega$ points"
+plot_domain_wpoints(Ω, Γ, Ω_Pts_edge, pts_visual=pts_plot_props)
+"""
