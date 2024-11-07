@@ -14,7 +14,7 @@ class Rect:
         self.y_min = self.y
         self.y_max = self.y + self.height
         self.geo_type = "Rect"
-        self.BC = None
+        self.BC = BC
 
     def properties(self):
         print(
@@ -109,7 +109,7 @@ class Circ:
         self.y_min = self.y - self.r
         self.y_max = self.y + self.r
         self.geo_type = "Circ"
-        self.BC = None
+        self.BC = BC
 
     def properties(self):
         print(f"x0 = {self.x}, y0 = {self.y}, r = {self.r}")

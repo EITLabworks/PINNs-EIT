@@ -4,10 +4,8 @@ from .geo import Rect, Circ
 
 def exclude_points_in_region(pts, geo_s: Union[Rect, Circ]):
     if isinstance(geo_s, list):
-        n_geos = len(geo_s)
-        print(f"Got a list of {n_geos} geometries to exclude.")
+        print(f"Got a list of {len(geo_s)} geometries to exclude.")
     else:
-        n_geos = 1
         geo_s = [geo_s]
 
     for geo in geo_s:
