@@ -63,6 +63,16 @@ class Rect:
         plt.tight_layout()
         plt.show()
 
+    def generate_grid(self, n_pts_x=100, n_pts_y=100):
+        """
+        Create uniform distributed mesh points on the geometry.
+        """
+        x = np.linspace(self.x_min, self.x_max, n_pts_x)
+        y = np.linspace(self.y_min, self.y_max, n_pts_y)
+        X, Y = np.meshgrid(x, y)
+        grid_points = np.stack([X.flatten(), Y.flatten()], axis=-1)
+        return X, Y, grid_points
+
     def domain_points_exclude_Rect(self, exclude, n_pts, tol=0.02):
         ### old
         gen_points = 0

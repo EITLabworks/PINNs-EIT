@@ -1,5 +1,5 @@
-from .classes_2d import Rect, Circ
-from .visualization import plot_geo
+from .geo import Rect, Circ
+from .visualization import plot_geo, plot_prediction
 from .points_manipulation import exclude_points_in_region
 
 __all__ = [
@@ -8,6 +8,7 @@ __all__ = [
     "Circ",
     # .visualization
     "plot_geo",
+    "plot_prediction",
     # .points_manipulation
     "exclude_points_in_region",
 ]
