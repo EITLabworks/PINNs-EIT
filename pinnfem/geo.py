@@ -1,10 +1,12 @@
+from typing import Union
+
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
 
 class Rect:
-    def __init__(self, x, y, width, height, BC=None):
+    def __init__(self, x, y, width, height, BC: dict = None):
         self.x = x
         self.y = y
         self.width = width
@@ -100,7 +102,7 @@ class Rect:
 
 
 class Circ:
-    def __init__(self, x, y, r, BC=None):
+    def __init__(self, x, y, r, BC: dict = None):
         self.x = x
         self.y = y
         self.r = r
@@ -148,6 +150,62 @@ class Circ:
         ax.add_patch(patch)
         plt.xlim(self.x - self.r - 0.2, self.x + self.r + 0.2)
         plt.ylim(self.y - self.r - 0.2, self.y + self.r + 0.2)
+        plt.xlabel("$x$")
+        plt.ylabel("$y$")
+        plt.axis("equal")
+        plt.tight_layout()
+        plt.show()
+
+
+from typing import Union
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+
+
+###
+class Poly:
+    def __init__(self, P_xy_s: Union[list, np.ndarray], BC: dict = None):
+        """
+        P_xy_s ... [[-0.5,-0.5],[0.5,-0.5],[0,0.5]] for drawing a triangle.
+        """
+        assert len(P_xy_s) > 2, print("Need a list of at least two points.")
+
+        if isinstance(P_xy_s, list):
+            P_xy_s = np.array(P_xy_s)
+
+        self.P_xy_s = P_xy_s
+        self.vertices = [(x, y) for x, y in P_xy_s]
+        self.P_xs = P_xy_s[:, 0]
+        self.P_ys = P_xy_s[:, 1]
+        self.x_min = np.min(P_xy_s[:, 0])
+        self.x_max = np.max(P_xy_s[:, 0])
+        self.y_min = np.min(P_xy_s[:, 1])
+        self.y_max = np.max(P_xy_s[:, 1])
+        self.geo_type = "Poly"
+        self.BC = BC
+
+    def properties(self):
+        for i, ps in enumerate(self.P_xy_s):
+            print(f"P{i}(x,y) = {ps}")
+
+    def generate_edge_points(self, n_pts):
+        pass  # TBD
+
+    def generate_surface_points(self, n_pts):
+        pass  # TBD
+
+    def plot(self, edgecolor="C0", facecolor="none", hatch="/"):
+        fig, ax = plt.subplots()
+        polygon = patches.Polygon(
+            self.vertices,
+            closed=True,
+            edgecolor=edgecolor,
+            facecolor=facecolor,
+            hatch=hatch,
+        )
+        ax.add_patch(polygon)
+        plt.xlim(self.x_min - 0.2, self.x_max + 0.2)
+        plt.ylim(self.y_min - 0.2, self.y_max + 0.2)
         plt.xlabel("$x$")
         plt.ylabel("$y$")
         plt.axis("equal")

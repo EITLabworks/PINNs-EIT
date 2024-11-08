@@ -33,6 +33,17 @@ def plot_geo(geo_s):
                 facecolor="none",
             )
             obj_counts[1] += 1
+
+        elif geo.geo_type == "Poly":
+            patch = patches.Polygon(
+                geo.vertices,
+                closed=True,
+                label=f"{geo.geo_type} {obj_counts[1]}",
+                edgecolor=f"C{i}",
+                facecolor="none",
+            )
+            obj_counts[1] += 1
+
         ax.add_patch(patch)
     if n_geos != 1:
         plt.legend()

@@ -1,14 +1,20 @@
-from pinneit import Circ, Rect, plot_geo, exclude_points_in_region, plot_prediction
-
-## wrapper
 from netgen.geom2d import CSG2d, Circle, Rectangle
-from ngsolve import Mesh
+from ngsolve import (
+    Mesh,
+    CoefficientFunction,
+    H1,
+    BilinearForm,
+    grad,
+    dx,
+    GridFunction,
+    Grad,
+)
 from ngsolve.webgui import Draw
+from collections import defaultdict
 
 
 def wrap_to_mesh(main, interior_s, refinement=0.2):
     def create_geo_component(geo):
-        # Rectangle(pmin=(-3,-2), pmax=(3,2), bc = "default", mat = "air")
         if geo.geo_type == "Rect":
             component = Rectangle(
                 pmin=(geo.x_min, geo.y_min),
@@ -20,6 +26,10 @@ def wrap_to_mesh(main, interior_s, refinement=0.2):
             component = Circle(
                 center=(geo.x, geo.y), radius=geo.r, bc=geo.BC["bc"], mat=geo.BC["mat"]
             )
+
+        elif geo.geo_type == "Poly":
+            print("At the moment the wrapping of polygons is not implemented.")
+            pass
         return component
 
     if isinstance(interior_s, list):
@@ -47,10 +57,6 @@ def wrap_to_mesh(main, interior_s, refinement=0.2):
 
 
 # solve
-
-from collections import defaultdict
-from ngsolve import CoefficientFunction
-from ngsolve import H1, BilinearForm, grad, dx, GridFunction, Grad
 
 
 def solve(main, interior_s, refinement=0.2):
@@ -87,9 +93,10 @@ def solve(main, interior_s, refinement=0.2):
 
     a += diel_perm_cf * grad(ut) * grad(vt) * dx
     a.Assemble()
-    u = GridFunction(fes, name="Potential")
-    u.Set(potential_cf, definedon=mesh.Boundaries(potential_str))
-    f = u.vec.CreateVector()
-    f.data = a.mat * u.vec
-    u.vec.data -= a.mat.Inverse(fes.FreeDofs(), inverse="sparsecholesky") * f
-    Draw(u)
+    gfu = GridFunction(fes, name="Potential")
+    gfu.Set(potential_cf, definedon=mesh.Boundaries(potential_str))
+    f = gfu.vec.CreateVector()
+    f.data = a.mat * gfu.vec
+    gfu.vec.data -= a.mat.Inverse(fes.FreeDofs(), inverse="sparsecholesky") * f
+    Draw(gfu)
+    return gfu
