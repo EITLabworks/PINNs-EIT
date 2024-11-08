@@ -58,9 +58,18 @@ def plot_prediction(X, Y, u_pred):
     u_pred = u_pred.reshape(X.shape)
     plt.figure(figsize=(8, 6))
     plt.contourf(X, Y, u_pred, 100, cmap="coolwarm", vmin=0, vmax=1)
-    plt.colorbar(label="Potential $\phi(x, y)$")
+    plt.colorbar(label="Potential $ϕ(x, y)$")
     plt.title("Predicted Potential Distribution")
     plt.xlabel("x")
     plt.ylabel("y")
     plt.gca().set_aspect("equal", adjustable="box")
+    plt.show()
+
+
+def plot_test_points(xs, ys, vals):
+    plt.scatter(xs, ys, c=vals)
+    plt.colorbar(label="Potential ϕ(x, y)")
+    plt.xlabel("x")
+    plt.ylabel("y")
+    plt.axis("equal")
     plt.show()

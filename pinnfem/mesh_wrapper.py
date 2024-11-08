@@ -11,6 +11,7 @@ from ngsolve import (
 )
 from ngsolve.webgui import Draw
 from collections import defaultdict
+import numpy as np
 
 
 def wrap_to_mesh(main, interior_s, refinement=0.2):
@@ -100,3 +101,9 @@ def solve(main, interior_s, refinement=0.2):
     gfu.vec.data -= a.mat.Inverse(fes.FreeDofs(), inverse="sparsecholesky") * f
     Draw(gfu)
     return gfu
+
+
+def get_vals_of_points(mesh, gfu, Pts):
+    X, Y = Pts[:, 0], Pts[:, 1]
+    vals = np.array([gfu(mesh(*p)) for p in Pts])
+    return X, Y, vals

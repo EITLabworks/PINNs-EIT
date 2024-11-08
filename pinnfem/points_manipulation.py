@@ -18,7 +18,7 @@ def exclude_points_in_region(pts, geo_s: Union[Rect, Circ], return_mask=False):
             )
         elif geo.geo_type == "Circ":
             mask = (pts[:, 0] - geo.x) ** 2 + (pts[:, 1] - geo.y) ** 2 <= geo.r**2
-            pts = pts[~mask]
+        pts = pts[~mask]
 
     if not return_mask:
         return pts
