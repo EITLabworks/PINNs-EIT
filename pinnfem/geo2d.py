@@ -40,11 +40,11 @@ class Rect:
         self.edge_points = pts
         return pts
 
-    def generate_surface_points(self, n_pts, return_pts = True):
+    def generate_surface_points(self, n_pts, return_pts=True):
         pts = np.random.rand(n_pts, 2)
         pts[:, 0] = self.x_min + (self.x_max - self.x_min) * pts[:, 0]
         pts[:, 1] = self.y_min + (self.y_max - self.y_min) * pts[:, 1]
-        
+
         self.surface_points = pts
         if return_pts:
             return pts
@@ -123,17 +123,17 @@ class Circ:
             f"x_min = {self.x_min:.2f}, x_max = {self.x_max:.2f}, y_min = {self.y_min:.2f}, y_max = {self.y_max:.2f}"
         )
 
-    def generate_edge_points(self, n_pts, return_pts = True):
+    def generate_edge_points(self, n_pts, return_pts=True):
         pts = np.zeros((n_pts, 2))
         angles = np.random.uniform(0, 2 * np.pi, n_pts)
 
         pts[:, 0] = self.x + self.r * np.cos(angles)
         pts[:, 1] = self.y + self.r * np.sin(angles)
-        self.edge_points = pts 
+        self.edge_points = pts
         if return_pts:
             return pts
 
-    def generate_surface_points(self, n_pts, return_pts = True):
+    def generate_surface_points(self, n_pts, return_pts=True):
         pts = np.zeros((n_pts, n_pts))
         rand_r = self.r * np.sqrt(np.random.uniform(0, 1, n_pts))
         rand_angle = np.random.uniform(0, 2 * np.pi, n_pts)
@@ -195,7 +195,7 @@ class Poly:
         for i, ps in enumerate(self.P_xy_s):
             print(f"P{i}(x,y) = {ps}")
 
-    def generate_edge_points(self, n_pts, return_pts = True):
+    def generate_edge_points(self, n_pts, return_pts=True):
         # TBD
         if return_pts:
             return pts
@@ -204,7 +204,6 @@ class Poly:
         # TBD
         if return_pts:
             return pts
-        
 
     def plot(self, edgecolor="C0", facecolor="none", hatch="/"):
         fig, ax = plt.subplots()

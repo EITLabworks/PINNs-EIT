@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
+import numpy as np
+
 
 def plot_geo(geo_s):
     if isinstance(geo_s, list):
@@ -10,10 +12,10 @@ def plot_geo(geo_s):
     else:
         n_geos = 1
         geo_s = [geo_s]
-        
-    # [circ, rect, poly, ?] or [rect, sphere, ?]    
-    obj_counts = [1, 1, 1]  
-    
+
+    # [circ, rect, poly, ?] or [rect, sphere, ?]
+    obj_counts = [1, 1, 1]
+
     # 2d geometries
     if geo_s[0].n_dim == 2:
         fig, ax = plt.subplots()
@@ -49,20 +51,20 @@ def plot_geo(geo_s):
                 obj_counts[1] += 1
 
             ax.add_patch(patch)
-    
+
         if n_geos != 1:
             plt.legend()
         plt.xlabel("$x$")
         plt.ylabel("$y$")
         plt.axis("equal")
-    
+
     # 3d geometries
     if geo_s[0].n_dim == 3:
-        xlims= list()
-        ylims= list()
+        xlims = list()
+        ylims = list()
         zlims = list()
         fig = plt.figure()
-        ax = fig.add_subplot(projection='3d')
+        ax = fig.add_subplot(projection="3d")
         for i, geo in enumerate(geo_s):
             if geo.geo_type == "Cuboid":
                 label = f"{geo.geo_type} {obj_counts[1]}"
@@ -73,20 +75,27 @@ def plot_geo(geo_s):
                         facecolors="gray",
                         linewidths=1,
                         edgecolors=f"C{i}",
-                        alpha=0.2
-                        )
+                        alpha=0.2,
                     )
+                )
                 obj_counts[0] += 1
-
+            if geo.geo_type == "Sphere":
+                u = np.linspace(0, 2 * np.pi, 100)
+                v = np.linspace(0, np.pi, 100)
+                x = geo.x + geo.r * np.outer(np.cos(u), np.sin(v))
+                y = geo.y + geo.r * np.outer(np.sin(u), np.sin(v))
+                z = geo.z + geo.r * np.outer(np.ones(np.size(u)), np.cos(v))
+                ax.plot_surface(x, y, z, color=f"C{i}", alpha=0.2)
+                obj_counts[1] += 1
         # if n_geos != 1:
         #     ax.legend()
         ax.set_xlabel("x")
         ax.set_ylabel("y")
         ax.set_zlabel("z")
         ax.autoscale()
-        #ax.set_aspect("equal")
- 
-    #plt.tight_layout()
+        # ax.set_aspect("equal")
+
+    # plt.tight_layout()
     plt.show()
 
 
