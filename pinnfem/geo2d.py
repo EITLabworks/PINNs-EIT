@@ -6,7 +6,34 @@ import matplotlib.patches as patches
 
 
 class Rect:
-    def __init__(self, x, y, width, height, BC: dict = None):
+    """
+    Rectangle surface element class
+    """
+
+    def __init__(
+        self,
+        x: Union[int, float],
+        y: Union[int, float],
+        width: Union[int, float],
+        height: Union[int, float],
+        BC: dict = None,
+    ):
+        """
+        __init__
+
+        Parameters
+        ----------
+        x : Union[int,float]
+            x-position
+        y : Union[int,float]
+            y-position
+        width : Union[int,float]
+            x-direction width
+        height : Union[int,float]
+            y-direction height
+        BC : dict, optional
+            class object properties for ngsolve, by default None
+        """
         self.x = x
         self.y = y
         self.width = width
@@ -20,6 +47,9 @@ class Rect:
         self.BC = BC
 
     def properties(self):
+        """
+        print properties
+        """
         print(
             f"x0 = {self.x}, y0 = {self.y}, width = {self.width}, height = {self.height}"
         )
@@ -27,7 +57,23 @@ class Rect:
             f"x_min = {self.x_min:.2f}, x_max = {self.x_max:.2f}, y_min = {self.y_min:.2f}, y_max = {self.y_max:.2f}"
         )
 
-    def generate_edge_points(self, n_pts):
+    def generate_edge_points(self, n_pts: int, return_pts: bool = True):
+        """
+        generate edge points.
+
+        Parameters
+        ----------
+        n_pts : int
+            number of points
+        return_pts : bool, optional
+            return the created points, by default True
+
+        Returns
+        -------
+        np.ndarray
+            edge points
+        """
+
         ydir_pts = np.random.uniform(low=self.y_min, high=self.y_max, size=n_pts // 2)
         xdir_pts = np.random.uniform(low=self.x_min, high=self.x_max, size=n_pts // 2)
 
@@ -38,9 +84,25 @@ class Rect:
 
         pts = np.hstack((x_lower_pts, x_upper_pts, y_left_pts, y_right_pts)).T
         self.edge_points = pts
-        return pts
+        if return_pts:
+            return pts
 
-    def generate_surface_points(self, n_pts, return_pts=True):
+    def generate_surface_points(self, n_pts: int, return_pts: bool = True):
+        """
+        Generate surface points
+
+        Parameters
+        ----------
+        n_pts : int
+            number of points
+        return_pts : bool, optional
+            return the created points, by default True
+
+        Returns
+        -------
+        np.ndarray
+            surface points
+        """
         pts = np.random.rand(n_pts, 2)
         pts[:, 0] = self.x_min + (self.x_max - self.x_min) * pts[:, 0]
         pts[:, 1] = self.y_min + (self.y_max - self.y_min) * pts[:, 1]
@@ -49,7 +111,19 @@ class Rect:
         if return_pts:
             return pts
 
-    def plot(self, edgecolor="C0", facecolor="none", hatch="/"):
+    def plot(self, edgecolor: str = "C0", facecolor: str = "none", hatch: str = "/"):
+        """
+        plot geometry
+
+        Parameters
+        ----------
+        edgecolor : str, optional
+            _description_, by default "C0"
+        facecolor : str, optional
+            _description_, by default "none"
+        hatch : str, optional
+            _description_, by default "/"
+        """
         fig, ax = plt.subplots()
         patch = patches.Rectangle(
             (self.x, self.y),
@@ -68,9 +142,21 @@ class Rect:
         plt.tight_layout()
         plt.show()
 
-    def generate_grid(self, n_pts_x=100, n_pts_y=100):
+    def generate_grid(self, n_pts_x: int = 100, n_pts_y: int = 100):
         """
-        Create uniform distributed mesh points on the geometry.
+        create uniform distributed mesh points on the geometry.
+
+        Parameters
+        ----------
+        n_pts_x : int, optional
+            number of points on x-axis, by default 100
+        n_pts_y : int, optional
+            number of points on y-axis, by default 100
+
+        Returns
+        -------
+        _type_
+            _description_
         """
         x = np.linspace(self.x_min, self.x_max, n_pts_x)
         y = np.linspace(self.y_min, self.y_max, n_pts_y)
@@ -105,7 +191,31 @@ class Rect:
 
 
 class Circ:
-    def __init__(self, x, y, r, BC: dict = None):
+    """
+    Circular surface element class
+    """
+
+    def __init__(
+        self,
+        x: Union[int, float],
+        y: Union[int, float],
+        r: Union[int, float],
+        BC: dict = None,
+    ):
+        """
+        __init__ _summary_
+
+        Parameters
+        ----------
+        x : Union[int,float]
+            center of the circle on x-axis
+        y : Union[int,float]
+            center of the circle on y-axis
+        r : Union[int,float]
+            radius of the circle
+        BC : dict, optional
+            class object properties for ngsolve, by default None
+        """
         self.x = x
         self.y = y
         self.r = r
@@ -123,7 +233,22 @@ class Circ:
             f"x_min = {self.x_min:.2f}, x_max = {self.x_max:.2f}, y_min = {self.y_min:.2f}, y_max = {self.y_max:.2f}"
         )
 
-    def generate_edge_points(self, n_pts, return_pts=True):
+    def generate_edge_points(self, n_pts: int, return_pts: bool = True):
+        """
+        Generate edge points.
+
+        Parameters
+        ----------
+        n_pts : int
+            number of points
+        return_pts : bool, optional
+            return the created points, by default True
+
+        Returns
+        -------
+        np.ndarray
+            edge points
+        """
         pts = np.zeros((n_pts, 2))
         angles = np.random.uniform(0, 2 * np.pi, n_pts)
 
@@ -133,7 +258,22 @@ class Circ:
         if return_pts:
             return pts
 
-    def generate_surface_points(self, n_pts, return_pts=True):
+    def generate_surface_points(self, n_pts: int, return_pts: bool = True):
+        """
+        Generate surface points
+
+        Parameters
+        ----------
+        n_pts : int
+            number of points
+        return_pts : bool, optional
+            return the created points, by default True
+
+        Returns
+        -------
+        np.ndarray
+            surface points
+        """
         pts = np.zeros((n_pts, n_pts))
         rand_r = self.r * np.sqrt(np.random.uniform(0, 1, n_pts))
         rand_angle = np.random.uniform(0, 2 * np.pi, n_pts)
@@ -144,7 +284,19 @@ class Circ:
         if return_pts:
             return pts
 
-    def plot(self, edgecolor="C0", facecolor="none", hatch="/"):
+    def plot(self, edgecolor: str = "C0", facecolor: str = "none", hatch: str = "/"):
+        """
+        plot geometry
+
+        Parameters
+        ----------
+        edgecolor : str, optional
+            _description_, by default "C0"
+        facecolor : str, optional
+            _description_, by default "none"
+        hatch : str, optional
+            _description_, by default "/"
+        """
         fig, ax = plt.subplots()
         patch = patches.Circle(
             (self.x, self.y),
@@ -163,12 +315,6 @@ class Circ:
         plt.show()
 
 
-from typing import Union
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-
-
-###
 class Poly:
     def __init__(self, P_xy_s: Union[list, np.ndarray], BC: dict = None):
         """
@@ -195,17 +341,29 @@ class Poly:
         for i, ps in enumerate(self.P_xy_s):
             print(f"P{i}(x,y) = {ps}")
 
-    def generate_edge_points(self, n_pts, return_pts=True):
+    def generate_edge_points(self, n_pts: int, return_pts: bool = True):
         # TBD
         if return_pts:
             return pts
 
-    def generate_surface_points(self, n_pts, return_pts=False):
+    def generate_surface_points(self, n_pts: int, return_pts: bool = False):
         # TBD
         if return_pts:
             return pts
 
-    def plot(self, edgecolor="C0", facecolor="none", hatch="/"):
+    def plot(self, edgecolor: str = "C0", facecolor: str = "none", hatch: str = "/"):
+        """
+        plot geometry
+
+        Parameters
+        ----------
+        edgecolor : str, optional
+            _description_, by default "C0"
+        facecolor : str, optional
+            _description_, by default "none"
+        hatch : str, optional
+            _description_, by default "/"
+        """
         fig, ax = plt.subplots()
         polygon = patches.Polygon(
             self.vertices,
