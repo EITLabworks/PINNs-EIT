@@ -9,9 +9,13 @@ from ngsolve import (
     GridFunction,
     Grad,
 )
+from netgen.occ import OCCGeometry, Box, Pnt, Glue, Sphere
+
 from ngsolve.webgui import Draw
 from collections import defaultdict
 import numpy as np
+
+
 
 
 def wrap_to_mesh(main, interior_s, refinement=0.2):
@@ -31,31 +35,70 @@ def wrap_to_mesh(main, interior_s, refinement=0.2):
         elif geo.geo_type == "Poly":
             print("At the moment the wrapping of polygons is not implemented.")
             pass
+            
+        elif geo.geo_type == "Cuboid":
+            component = Box(Pnt(geo.x, geo.y, geo.z), Pnt(geo.x_max, geo.y_max, geo.z_max)).bc(geo.BC["bc"]).mat(geo.BC["mat"])
+        
+        elif geo.geo_type == "Sphere":
+            print("TBD")
+            #component = Sphere
         return component
+    
 
     if isinstance(interior_s, list):
         interior_s = interior_s
     else:
         interior_s = [interior_s]
 
-    geometry = CSG2d()
-    domain = create_geo_component(main)
+    # 2d wrapper
+    if main.n_dim == 2:
+        geometry = CSG2d()
+        domain = create_geo_component(main)
 
-    for ints in interior_s:
-        fragment = create_geo_component(ints)
-        geometry.Add(fragment)
-        domain = domain - fragment  # "-" is subtsraction, "*" is union
+        for ints in interior_s:
+            fragment = create_geo_component(ints)
+            geometry.Add(fragment)
+            domain = domain - fragment  # "-" is subtsraction, "*" is union
 
-    geometry.Add(domain)
+        geometry.Add(domain)
 
-    mesh = Mesh(geometry.GenerateMesh(maxh=refinement))
-    # curve the mesh elements for geometry approximation of given order
-    mesh.Curve(3)
-    # print("Boundaries:",mesh.GetBoundaries())
-    # print("Materials:",mesh.GetMaterials())
+        mesh = Mesh(geometry.GenerateMesh(maxh=refinement))
+        # curve the mesh elements for geometry approximation of given order
+        mesh.Curve(3)
+        # print("Boundaries:",mesh.GetBoundaries())
+        # print("Materials:",mesh.GetMaterials())
 
-    return mesh
-
+        return mesh
+    
+    if main.n_dim == 3:
+        domain = create_geo_component(main)
+        fragment_list = list()
+        for ints in interior_s:
+            fragment = create_geo_component(ints)
+            fragment_list.append(fragment)
+            domain = domain - fragment
+        fragment_list.append(domain)
+        
+        geo = OCCGeometry(Glue(fragment_list))
+        mesh = Mesh(geo.GenerateMesh(maxh=refinement))
+        
+        mesh.Curve(3)
+        return mesh
+    
+# DBS Electrode
+class DBS_Electrode:
+    def __init__(self,x_tip,y_tip,z_tip, tip_r, dz_el1, di_ze1e2, dz_el2):
+        self.x_tip = x_tip #lowest center point of the electrode
+        self.y_tip = y_tip #.
+        self.z_tip = z_tip #.
+        self.tip_r = tip_r # electrode radius
+        self.dz_el1 = dz_el1 # electrpde 1 z-len
+        self.di_ze1e2 = di_ze1e2 # isolator distance
+        self.dz_el2 = dz_el2 # electrode 2 z-len
+        
+    def create_mesh(self):
+        print("TBD")
+        pass
 
 # solve
 

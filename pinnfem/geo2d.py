@@ -16,6 +16,7 @@ class Rect:
         self.y_min = self.y
         self.y_max = self.y + self.height
         self.geo_type = "Rect"
+        self.n_dim = 2
         self.BC = BC
 
     def properties(self):
@@ -36,15 +37,17 @@ class Rect:
         y_right_pts = np.vstack((np.ones(n_pts // 4) * self.x_max, ydir_pts[::2]))
 
         pts = np.hstack((x_lower_pts, x_upper_pts, y_left_pts, y_right_pts)).T
-
+        self.edge_points = pts
         return pts
 
-    def generate_surface_points(self, n_pts):
+    def generate_surface_points(self, n_pts, return_pts = True):
         pts = np.random.rand(n_pts, 2)
         pts[:, 0] = self.x_min + (self.x_max - self.x_min) * pts[:, 0]
         pts[:, 1] = self.y_min + (self.y_max - self.y_min) * pts[:, 1]
-
-        return pts
+        
+        self.surface_points = pts
+        if return_pts:
+            return pts
 
     def plot(self, edgecolor="C0", facecolor="none", hatch="/"):
         fig, ax = plt.subplots()
@@ -111,6 +114,7 @@ class Circ:
         self.y_min = self.y - self.r
         self.y_max = self.y + self.r
         self.geo_type = "Circ"
+        self.n_dim = 2
         self.BC = BC
 
     def properties(self):
@@ -119,24 +123,26 @@ class Circ:
             f"x_min = {self.x_min:.2f}, x_max = {self.x_max:.2f}, y_min = {self.y_min:.2f}, y_max = {self.y_max:.2f}"
         )
 
-    def generate_edge_points(self, n_pts):
+    def generate_edge_points(self, n_pts, return_pts = True):
         pts = np.zeros((n_pts, 2))
         angles = np.random.uniform(0, 2 * np.pi, n_pts)
 
         pts[:, 0] = self.x + self.r * np.cos(angles)
         pts[:, 1] = self.y + self.r * np.sin(angles)
+        self.edge_points = pts 
+        if return_pts:
+            return pts
 
-        return pts
-
-    def generate_surface_points(self, n_pts):
+    def generate_surface_points(self, n_pts, return_pts = True):
         pts = np.zeros((n_pts, n_pts))
         rand_r = self.r * np.sqrt(np.random.uniform(0, 1, n_pts))
         rand_angle = np.random.uniform(0, 2 * np.pi, n_pts)
 
         pts[:, 0] = self.x + rand_r * np.cos(rand_angle)
         pts[:, 1] = self.y + rand_r * np.sin(rand_angle)
-
-        return pts
+        self.surface_points = pts
+        if return_pts:
+            return pts
 
     def plot(self, edgecolor="C0", facecolor="none", hatch="/"):
         fig, ax = plt.subplots()
@@ -182,17 +188,23 @@ class Poly:
         self.y_min = np.min(P_xy_s[:, 1])
         self.y_max = np.max(P_xy_s[:, 1])
         self.geo_type = "Poly"
+        self.n_dim = 2
         self.BC = BC
 
     def properties(self):
         for i, ps in enumerate(self.P_xy_s):
             print(f"P{i}(x,y) = {ps}")
 
-    def generate_edge_points(self, n_pts):
-        pass  # TBD
+    def generate_edge_points(self, n_pts, return_pts = True):
+        # TBD
+        if return_pts:
+            return pts
 
-    def generate_surface_points(self, n_pts):
-        pass  # TBD
+    def generate_surface_points(self, n_pts, return_pts=False):
+        # TBD
+        if return_pts:
+            return pts
+        
 
     def plot(self, edgecolor="C0", facecolor="none", hatch="/"):
         fig, ax = plt.subplots()

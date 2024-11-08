@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
 
 def plot_geo(geo_s):
@@ -9,48 +10,83 @@ def plot_geo(geo_s):
     else:
         n_geos = 1
         geo_s = [geo_s]
+        
+    # [circ, rect, poly, ?] or [rect, sphere, ?]    
+    obj_counts = [1, 1, 1]  
+    
+    # 2d geometries
+    if geo_s[0].n_dim == 2:
+        fig, ax = plt.subplots()
+        for i, geo in enumerate(geo_s):
+            if geo.geo_type == "Circ":
+                patch = patches.Circle(
+                    (geo.x, geo.y),
+                    geo.r,
+                    label=f"{geo.geo_type} {obj_counts[0]}",
+                    edgecolor=f"C{i}",
+                    facecolor="none",
+                )
+                obj_counts[0] += 1
+            elif geo.geo_type == "Rect":
+                patch = patches.Rectangle(
+                    (geo.x, geo.y),
+                    geo.width,
+                    geo.height,
+                    label=f"{geo.geo_type} {obj_counts[1]}",
+                    edgecolor=f"C{i}",
+                    facecolor="none",
+                )
+                obj_counts[1] += 1
 
-    fig, ax = plt.subplots()
+            elif geo.geo_type == "Poly":
+                patch = patches.Polygon(
+                    geo.vertices,
+                    closed=True,
+                    label=f"{geo.geo_type} {obj_counts[1]}",
+                    edgecolor=f"C{i}",
+                    facecolor="none",
+                )
+                obj_counts[1] += 1
 
-    obj_counts = [1, 1, 1]  # [circ, rect,line]
-    for i, geo in enumerate(geo_s):
-        if geo.geo_type == "Circ":
-            patch = patches.Circle(
-                (geo.x, geo.y),
-                geo.r,
-                label=f"{geo.geo_type} {obj_counts[0]}",
-                edgecolor=f"C{i}",
-                facecolor="none",
-            )
-            obj_counts[0] += 1
-        elif geo.geo_type == "Rect":
-            patch = patches.Rectangle(
-                (geo.x, geo.y),
-                geo.width,
-                geo.height,
-                label=f"{geo.geo_type} {obj_counts[1]}",
-                edgecolor=f"C{i}",
-                facecolor="none",
-            )
-            obj_counts[1] += 1
+            ax.add_patch(patch)
+    
+        if n_geos != 1:
+            plt.legend()
+        plt.xlabel("$x$")
+        plt.ylabel("$y$")
+        plt.axis("equal")
+    
+    # 3d geometries
+    if geo_s[0].n_dim == 3:
+        xlims= list()
+        ylims= list()
+        zlims = list()
+        fig = plt.figure()
+        ax = fig.add_subplot(projection='3d')
+        for i, geo in enumerate(geo_s):
+            if geo.geo_type == "Cuboid":
+                label = f"{geo.geo_type} {obj_counts[1]}"
+                ax.add_collection3d(
+                    Poly3DCollection(
+                        geo.faces,
+                        label=label,
+                        facecolors="gray",
+                        linewidths=1,
+                        edgecolors=f"C{i}",
+                        alpha=0.2
+                        )
+                    )
+                obj_counts[0] += 1
 
-        elif geo.geo_type == "Poly":
-            patch = patches.Polygon(
-                geo.vertices,
-                closed=True,
-                label=f"{geo.geo_type} {obj_counts[1]}",
-                edgecolor=f"C{i}",
-                facecolor="none",
-            )
-            obj_counts[1] += 1
-
-        ax.add_patch(patch)
-    if n_geos != 1:
-        plt.legend()
-    plt.xlabel("$x$")
-    plt.ylabel("$y$")
-    plt.axis("equal")
-    plt.tight_layout()
+        # if n_geos != 1:
+        #     ax.legend()
+        ax.set_xlabel("x")
+        ax.set_ylabel("y")
+        ax.set_zlabel("z")
+        ax.autoscale()
+        #ax.set_aspect("equal")
+ 
+    #plt.tight_layout()
     plt.show()
 
 
