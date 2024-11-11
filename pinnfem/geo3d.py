@@ -381,8 +381,9 @@ class Sphere:
         ax.set_aspect("equal")
         plt.show()
 
+
 class Cylinder:
-    def __init__(self,x,y,z,r,h,BC=None):
+    def __init__(self, x, y, z, r, h, BC=None):
         self.x = x
         self.y = y
         self.z = z
@@ -392,47 +393,47 @@ class Cylinder:
         self.x_max = self.x + self.r
         self.y_min = self.y - self.r
         self.y_max = self.y + self.r
-        self.z_min = self.z - self.h/2
-        self.z_max = self.z + self.h/2
+        self.z_min = self.z - self.h / 2
+        self.z_max = self.z + self.h / 2
         self.geo_type = "Cylinder"
         self.n_dim = 3
         self.BC = BC
-        
+
     def properties(self):
         print(self.__dict__)
-        
+
     def generate_surfaces_points(self, n_pts_circ, n_pts_lat, return_pts=True):
         """
         n_pts_circ : total number of points on top and bottom surface
         n_pts_lat : total number of points at the lateral surface
         """
-       
+
         # top
         rand_r = self.r * np.sqrt(np.random.uniform(0, 1, n_pts_circ))
         theta = np.random.uniform(0, 2 * np.pi, n_pts_circ)
         x = self.x + rand_r * np.cos(theta)
         y = self.y + rand_r * np.sin(theta)
         z = np.ones(n_pts_circ) * self.z_max
-        
+
         pts_top = np.vstack((x, y, z)).T
-        
+
         # bottom
         rand_r = self.r * np.sqrt(np.random.uniform(0, 1, n_pts_circ))
         theta = np.random.uniform(0, 2 * np.pi, n_pts_circ)
         x = self.x + rand_r * np.cos(theta)
         y = self.y + rand_r * np.sin(theta)
         z = np.ones(n_pts_circ) * self.z_min
-        
+
         pts_bot = np.vstack((x, y, z)).T
-        
+
         # lateral surface
         theta = np.random.uniform(0, 2 * np.pi, n_pts_lat)
         x = self.x + self.r * np.cos(theta)
         y = self.y + self.r * np.sin(theta)
         z = np.random.uniform(self.z_min, self.z_max, n_pts_lat)
-        
+
         pts_lat = np.vstack((x, y, z)).T
-        
+
         pts = np.vstack((pts_top, pts_lat, pts_bot))
         self.surface_points = pts
         print(f"Generated {pts.shape} surface points.")
@@ -452,15 +453,15 @@ class Cylinder:
         print(f"Generated {pts.shape} volume points.")
         if return_pts:
             return pts
-        
+
     def plot(self, elev=40, azim=30, facecolors="C0", alpha=0.3):
         fig = plt.figure()
         ax = fig.add_subplot(projection="3d")
         z = np.linspace(self.z_min, self.z_max, 100)
-        theta = np.linspace(0, 2*np.pi, 100)
-        theta_grid, z=np.meshgrid(theta, z)
-        x = self.r*np.cos(theta_grid) + self.x
-        y = self.r*np.sin(theta_grid) + self.y
+        theta = np.linspace(0, 2 * np.pi, 100)
+        theta_grid, z = np.meshgrid(theta, z)
+        x = self.r * np.cos(theta_grid) + self.x
+        y = self.r * np.sin(theta_grid) + self.y
         ax.plot_surface(x, y, z, color=facecolors, alpha=alpha)
         ax.set_xlim([self.x_min - 0.2, self.x_max + 0.2])
         ax.set_ylim([self.y_min - 0.2, self.y_max + 0.2])

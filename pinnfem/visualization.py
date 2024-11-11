@@ -89,10 +89,10 @@ def plot_geo(geo_s):
                 obj_counts[1] += 1
             if geo.geo_type == "Cylinder":
                 z = np.linspace(geo.z_min, geo.z_max, 100)
-                theta = np.linspace(0, 2*np.pi, 100)
-                theta_grid, z=np.meshgrid(theta, z)
-                x = geo.r*np.cos(theta_grid) + geo.x
-                y = geo.r*np.sin(theta_grid) + geo.y
+                theta = np.linspace(0, 2 * np.pi, 100)
+                theta_grid, z = np.meshgrid(theta, z)
+                x = geo.r * np.cos(theta_grid) + geo.x
+                y = geo.r * np.sin(theta_grid) + geo.y
                 ax.plot_surface(x, y, z, color=f"C{i}", alpha=0.2)
                 obj_counts[2] += 1
         # if n_geos != 1:

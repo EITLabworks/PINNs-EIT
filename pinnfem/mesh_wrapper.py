@@ -49,11 +49,13 @@ def wrap_to_mesh(main, interior_s, refinement=0.2):
             )
         elif geo.geo_type == "Cylinder":
             component = (
-                Cylinder(Pnt(geo.x, geo.y, geo.z-geo.h/2), Z, r=geo.r, h=geo.h)# The "Z" denotes the z-orientation for the cylinder height
+                Cylinder(
+                    Pnt(geo.x, geo.y, geo.z - geo.h / 2), Z, r=geo.r, h=geo.h
+                )  # The "Z" denotes the z-orientation for the cylinder height
                 .bc(geo.BC["bc"])
                 .mat(geo.BC["mat"])
             )
-            
+
         return component
 
     if isinstance(interior_s, list):
@@ -95,8 +97,10 @@ def wrap_to_mesh(main, interior_s, refinement=0.2):
 
         mesh.Curve(3)
         return mesh
-        
+
+
 # solve
+
 
 def solve(main, interior_s, refinement=0.2):
     if isinstance(interior_s, list):
