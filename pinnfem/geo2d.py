@@ -56,6 +56,7 @@ class Rect:
         print(
             f"x_min = {self.x_min:.2f}, x_max = {self.x_max:.2f}, y_min = {self.y_min:.2f}, y_max = {self.y_max:.2f}"
         )
+        print(self.BC.__dict__)
 
     def generate_edge_points(self, n_pts: int, return_pts: bool = True):
         """
