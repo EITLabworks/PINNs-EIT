@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 
-from .geo2d import Circ
+from .geo2d import Circ, Rect  # , Poly
 
 
 class EitEnvironment:
@@ -56,6 +56,10 @@ class EitEnvironment:
         self.electrodes = el_list
         return pts
 
+    def add_anomalie(self, anomalie: Union[Rect, Circ]):
+        self.anomalie = anomalie
+        self.electrodes.append(anomalie)
+
     def set_inj_stage(
         self,
         el_plus: int,
@@ -86,11 +90,11 @@ class EitEnvironment:
     # plotting | printing
 
     def print_BCs(self):
-        print("Domain BC:\n\t", self.domain.BC, "\n")
+        print("Domain BC:\n\t", self.domain.BC)
 
-        print("Electrodes BC:\n\t")
+        print("Components BC:")
         for i, ele in enumerate(self.electrodes):
-            print(f"\tel_{i}", ele.BC)
+            print(f"\t{i}", ele.BC)
 
     def plot_domain(self):
         fig, ax = plt.subplots()

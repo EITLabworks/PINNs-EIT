@@ -102,7 +102,7 @@ def wrap_to_mesh(main, interior_s, refinement=0.2):
 # solve
 
 
-def solve(main, interior_s, refinement=0.2):
+def solve(main, interior_s, refinement=0.2, solve_for="pot"):
     if isinstance(interior_s, list):
         interior_s = interior_s
     else:
@@ -141,7 +141,12 @@ def solve(main, interior_s, refinement=0.2):
     f = gfu.vec.CreateVector()
     f.data = a.mat * gfu.vec
     gfu.vec.data -= a.mat.Inverse(fes.FreeDofs(), inverse="sparsecholesky") * f
-    Draw(gfu)
+
+    if solve_for == "pot":
+        Draw(gfu)
+    if solve_for == "E":
+        E = -grad(gfu)
+        Draw(E, mesh, "E")
     return gfu
 
 
