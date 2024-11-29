@@ -1,0 +1,10 @@
+3d*
+__pycache__
+*.ipynb_checkpoints
+poisson.ipynb
+
+check_phi_pinn3.ipynb
+engineering.ipynb
+poissonnum.ipynb
+archive/
+images/raw*
